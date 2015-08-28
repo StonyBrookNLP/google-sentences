@@ -2,12 +2,18 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 
 __author__ = 'chetannaik'
 
+
 def get_sentences(result):
-    sentences = []
-    for item in result[u'items']:
-        snippet = item[u'snippet'].replace('\n', '').encode('ascii', 'ignore')
-        sentences.extend(sent_tokenize(snippet))
-    return list(set(sentences))
+    if 'items' in result:
+        sentences = []
+        for item in result[u'items']:
+            snippet = item[u'snippet'].replace('\n', '').encode('ascii',
+                                                                'ignore')
+            sentences.extend(sent_tokenize(snippet))
+        ret_data = list(set(sentences))
+    else:
+        ret_data = []
+    return ret_data
 
 
 def filter_sentences(sentences, keyword=None):
@@ -15,7 +21,7 @@ def filter_sentences(sentences, keyword=None):
     for sentence in sentences:
         tokens = word_tokenize(sentence)
         if is_valid_sentence(sentence, tokens):
-            valid_sentences.append(sentence)    
+            valid_sentences.append(sentence)
     filtered_sentences = []
     if keyword:
         for word in keyword:
@@ -52,7 +58,7 @@ def is_valid_sentence(sentence, tokens):
         return False
 
     # Sentence does not start with character.
-    if "..." in sentence and sentence.index("...") < 15:
+    if "..." in sentence and sentence.index("...") < 10:
         return False
 
     # Sentence does not start with capital letter character.
